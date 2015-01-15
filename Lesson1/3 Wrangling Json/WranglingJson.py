@@ -16,7 +16,6 @@ articles in the last day, and return the following data:
 - list of URLs for all media entries with "format": "Standard Thumbnail"
 
 All your changes should be in the article_overview function.
-The rest of functions are provided for your convenience, if you want to access the API by yourself.
 
 If you want to know more, or query the site by yourself, please read the NYTimes Developer Documentation for the Most Popular API and apply for your own API Key for NY Times.
 """
@@ -40,9 +39,37 @@ def article_overview(kind, period):
     data = get_from_file(kind, period)
     titles = []
     urls =[]
-    # YOUR CODE HERE
+
+    # Your code
+    # My code
+    for index in data:
+        result = dict()
+        result[index['section']] = index['title']
+        titles.append(result)
+        for media in index['media']:
+            if 'media-metadata' in media:
+                for m in media['media-metadata']:
+                    if 'Standard Thumbnail' in m['format']:
+                         urls.append(m['url'])
 
     return (titles, urls)
+
+# Evaluator Answer
+# def article_overview(kind, period):
+#     data = get_from_file(kind, period)
+#     titles = []
+#     urls =[]
+
+#     for article in data:
+#         section = article["section"]
+#         title = article["title"]
+#         titles.append({section: title})
+#         if "media" in article:
+#             for m in article["media"]:
+#                 for mm in m["media-metadata"]:
+#                     if mm["format"] == "Standard Thumbnail":
+#                         urls.append(mm["url"])
+#     return (titles, urls)
 
 
 def query_site(url, target, offset):
