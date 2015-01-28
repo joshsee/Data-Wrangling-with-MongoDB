@@ -20,6 +20,7 @@ def extract_airports(page):
           if value not in exclude_list:
             data.append(value)
 
+
     return data
 
 
