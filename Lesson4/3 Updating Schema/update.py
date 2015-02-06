@@ -41,6 +41,7 @@ import codecs
 import csv
 import json
 import pprint
+import re
 
 DATAFILE = 'arachnid.csv'
 FIELDS ={'rdf-schema#label': 'label',
@@ -51,18 +52,37 @@ def add_field(filename, fields):
 
     process_fields = fields.keys()
     data = {}
+    collected_data = []
     with open(filename, "r") as f:
         reader = csv.DictReader(f)
         for i in range(3):
             l = reader.next()
-        # YOUR CODE HERE
+
+        for line in reader:
+            single_data = {}
+            for field, mongo_field in fields.iteritems():
+                if field == 'rdf-schema#label':
+                  match = re.search('^(\w+)', line[field])
+                  if match:
+                    single_data[mongo_field] = match.group().strip()
+                elif field == 'binomialAuthority_label':
+                    if line[field] != 'NULL':
+                        single_data[mongo_field] = line[field].strip()
+                    else:
+                        single_data[mongo_field] = None
+                collected_data.append(single_data)
+
+        for individual_data in collected_data:
+            if individual_data['binomialAuthority']:
+                data[individual_data['label']] = individual_data['binomialAuthority']
 
     return data
 
 
 def update_db(data, db):
     # YOUR CODE HERE
-    pass
+    for k, v in data.iteritems():
+        db.arachnid.update({'label':row['label']},{"$set":{'classification.binomialAuthority':row['binomialAuthority']}})
 
 
 def test():
@@ -72,15 +92,16 @@ def test():
     # and as an example for running this code locally!
 
     data = add_field(DATAFILE, FIELDS)
-    from pymongo import MongoClient
-    client = MongoClient("mongodb://localhost:27017")
-    db = client.examples
+    # from pymongo import MongoClient
+    # client = MongoClient("mongodb://localhost:27017")
+    # db = client.examples
+    db = None
 
     update_db(data, db)
 
-    updated = db.arachnid.find_one({'label': 'Opisthoncana'})
-    assert updated['classification']['binomialAuthority'] == 'Embrik Strand'
-    pprint.pprint(data)
+    # updated = db.arachnid.find_one({'label': 'Opisthoncana'})
+    # assert updated['classification']['binomialAuthority'] == 'Embrik Strand'
+    # pprint.pprint(data)
 
 
 
