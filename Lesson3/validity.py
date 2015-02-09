@@ -7,13 +7,13 @@ The following things should be done:
 - the rest of the fields and values should stay the same
 - if the value of the field is a valid year in range, as described above,
   write that line to the output_good file
-- if the value of the field is not a valid year, 
+- if the value of the field is not a valid year,
   write that line to the output_bad file
 - discard rows (neither write to good nor bad) if the URI is not from dbpedia.org
 - you should use the provided way of reading and writing data (DictReader and DictWriter)
   They will take care of dealing with the header.
 
-You can write helper functions for checking the data and writing the files, but we will call only the 
+You can write helper functions for checking the data and writing the files, but we will call only the
 'process_file' with 3 arguments (inputfile, output_good, output_bad).
 """
 import csv
@@ -30,34 +30,61 @@ def process_file(input_file, output_good, output_bad):
     with open(input_file, "r") as f:
         reader = csv.DictReader(f)
         header = reader.fieldnames
-
+        count = 0
         #COMPLETE THIS FUNCTION
         for lines in reader:
-            for k,v in lines.iteritems():
-                if k == 'productionStartYear':
-                    if v == "Null":
-                    #    bad.append(value)
-                    #else if value:
-                    print v[0:4]
-                else:
-                    data_good.append(v)        
+            if count>2:
+                data = {}
+                bad = False
+                skip = False
+                for k,v in lines.iteritems():
+                    if k == 'productionStartYear':
+                        if v != 'NULL':
+                            production_start_year = v.split('T')
+                            year = production_start_year[0][0:4]
+                            #convert year to int
+                            year = int(year)
+                            if year>=1886 and year<=2014:
+                                print year,
+                                data[k] = year
+                            else:
+                                bad = True
+                                data[k] = v
+                        else:
+                            bad = True
+                            data[k] = v
+                    elif k == 'URI':
+                        if str(v[7:18])!='dbpedia.org':
+                            skip = True
+                        data[k] = v
+                    else:
+                        data[k] = v
 
+                if bad == False and skip == False:
+                    print data['productionStartYear']
+                    data_good.append(data)
+                elif skip !=True:
+                    data_bad.append(data)
+            count+=1
+
+    print count
+    print len(data_good)
+    print len(data_bad)
+    # This is just an example on how you can use csv.DictWriter
+    # Remember that you have to output 2 files
+    with open(output_bad, "w") as g:
+        writer = csv.DictWriter(g, delimiter=",", fieldnames= header)
+        writer.writeheader()
+        for row in data_bad:
+            writer.writerow(row)
 
     # This is just an example on how you can use csv.DictWriter
     # Remember that you have to output 2 files
-    # with open(output_bad, "w") as g:
-    #     writer = csv.DictWriter(g, delimiter=",", fieldnames= header)
-    #     writer.writeheader()
-    #     for row in YOURDATA:
-    #         writer.writerow(row)    
-
-    # # This is just an example on how you can use csv.DictWriter
-    # # Remember that you have to output 2 files
-    # with open(output_good, "w") as g:
-    #     writer = csv.DictWriter(g, delimiter=",", fieldnames= header)
-    #     writer.writeheader()
-    #     for row in YOURDATA:
-    #         writer.writerow(row)
+    with open(output_good, "w") as g:
+        writer = csv.DictWriter(g, delimiter=",", fieldnames= header)
+        writer.writeheader()
+        for row in data_good:
+            writer.writerow(row)
 
 
 def test():
