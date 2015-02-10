@@ -23,6 +23,25 @@ For instructions related to MongoDB setup and datasets please see Course Materia
 Please note that the dataset you are using here is a smaller version of the twitter dataset used
 in examples in this lesson. If you attempt some of the same queries that we looked at in the lesson
 examples, your results will be different.
+
+Example docs
+{
+    "_id" : ObjectId("52fe1d364b5ab856eea75ebc"),
+    "elevation" : 1855,
+    "name" : "Kud",
+    "country" : "India",
+    "lon" : 75.28,
+    "lat" : 33.08,
+    "isPartOf" : [
+        "Jammu and Kashmir",
+        "Udhampur district"
+    ],
+    "timeZone" : [
+        "Indian Standard Time"
+    ],
+    "population" : 1140
+}
+
 """
 
 def get_db(db_name):
@@ -33,7 +52,7 @@ def get_db(db_name):
 
 def make_pipeline():
     # complete the aggregation pipeline
-    pipeline = [ ]
+    pipeline = [{"$match":{"country": "India"}}, { "$unwind" : "$isPartOf" }, {"$group": {"_id": "$isPartOf", "avgpopulation": {"$avg": "$population"}}}, {"$group": {"_id": "India Regional City Population Average", "avgcitypopulation": {"$avg": "$avgpopulation"}}}]
     return pipeline
 
 def aggregate(db, pipeline):

@@ -2,10 +2,12 @@
 """
 Use an aggregation query to answer the following question.
 
-Extrapolating from an earlier exercise in this lesson, find the average regional city population
-for all countries in the cities collection. What we are asking here is that you first calculate the
+Extrapolating from an earlier exercise in this lesson,
+find the average regional city population for all countries in the cities collection.
+What we are asking here is that you first calculate the
 average city population for each region in a country and then calculate the average of all the
-regional averages for a country. As a hint, _id fields in group stages need not be single values.
+regional averages for a country.
+As a hint, _id fields in group stages need not be single values.
 They can also be compound keys (documents composed of multiple fields). You will use the same
 aggregation operator in more than one stage in writing this aggregation query. I encourage you to
 write it one stage at a time and test after writing each stage.
@@ -33,7 +35,7 @@ def get_db(db_name):
 
 def make_pipeline():
     # complete the aggregation pipeline
-    pipeline = [ ]
+    pipeline = [{ "$unwind" : "$isPartOf" }, {"$group": {"_id": {"id": "$isPartOf", "country": "$country"}, "avgpopulation": {"$avg": "$population"}}}, {"$group": {"_id": "$_id.country", "avgRegionalPopulation": {"$avg": "$avgpopulation"}}}]
     return pipeline
 
 def aggregate(db, pipeline):
