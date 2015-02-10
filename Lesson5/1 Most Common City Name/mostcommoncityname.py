@@ -1,4 +1,4 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 """
 Use an aggregation query to answer the following question.
 
@@ -26,25 +26,6 @@ For instructions related to MongoDB setup and datasets please see Course Materia
 Please note that the dataset you are using here is a smaller version of the cities collection used in
 examples in this lesson. If you attempt some of the same queries that we looked at in the lesson
 examples, your results may be different.
-
-Example docs
-{
-    "_id" : ObjectId("52fe1d364b5ab856eea75ebc"),
-    "elevation" : 1855,
-    "name" : "Kud",
-    "country" : "India",
-    "lon" : 75.28,
-    "lat" : 33.08,
-    "isPartOf" : [
-        "Jammu and Kashmir",
-        "Udhampur district"
-    ],
-    "timeZone" : [
-        "Indian Standard Time"
-    ],
-    "population" : 1140
-}
-
 """
 
 def get_db(db_name):
@@ -55,12 +36,13 @@ def get_db(db_name):
 
 def make_pipeline():
     # complete the aggregation pipeline
-    # pipeline = [{"$group": {"_id": "$source", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}]
-    pipeline = [{ "$group": {"_id": { "$ifNull": [ "$name", false ] }, "count": { "$sum": 1 }}}, {"$sort": {"count": -1}}]
-    pipeline = [{"$match": { "name": {"$exits": 1}}}, {"$group": {"_id": "$name", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}]
+    #, {"$group": {"_id": "$name", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}
+    pipeline = [{"$match": { "name": {"$ne": None}}}, {"$group": {"_id": "$name", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit":1}]
     return pipeline
 
 def aggregate(db, pipeline):
+    import pprint
+    pprint.pprint(pipeline)
     result = db.cities.aggregate(pipeline)
     return result
 
