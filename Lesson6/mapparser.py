@@ -13,21 +13,25 @@ import xml.etree.ElementTree as ET
 import pprint
 
 def count_tags(filename):
-        # YOUR CODE HERE
+    with open(filename, 'r+') as f:
+        tree = ET.parse(f)
 
+    tags = dict()
+    for node in tree.iter():
+        if node.tag in tags:
+            tag_count = tags[node.tag]
+            tag_count+=1
+            tags[node.tag] = tag_count
+        else:
+            tags[node.tag] = 1
+
+    return tags
 
 def test():
 
     tags = count_tags('example.osm')
     pprint.pprint(tags)
-    assert tags == {'bounds': 1,
-                     'member': 3,
-                     'nd': 4,
-                     'node': 20,
-                     'osm': 1,
-                     'relation': 1,
-                     'tag': 7,
-                     'way': 1}
+    assert tags == {'bounds': 1, 'member': 3, 'nd': 4, 'node': 20, 'osm': 1, 'relation': 1, 'tag': 7, 'way': 1}
 
 
 
