@@ -59,9 +59,7 @@ def audit(osmfile):
             for tag in elem.iter("tag"):
                 if is_street_name(tag):
                     v = tag.attrib['v']
-                    print v,
                     clean_street_name = update_name(v, mapping)
-                    print clean_street_name
                     audit_street_type(street_types, clean_street_name)
 
     return street_types
