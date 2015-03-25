@@ -95,6 +95,32 @@ CREATED = [ "version", "changeset", "timestamp", "user", "uid"]
 
 mapping = { "St": "Street",
             "St.": "Street",
+<<<<<<< HEAD
+            "Rd.": "Road",
+            "road": "Road",
+            "Ave": "Avenue",
+            "Jl.": "Jalan",
+            "Jln": "Jalan",
+            "Lor": "Lorong",
+            "Dr": "Drive"
+            }
+
+def update_name(name, mapping):
+
+    # YOUR CODE HERE
+    street_name = name.split(' ')
+    if street_name in mapping:
+      correct_name = mapping[street_name[-1]]
+      street_name[-1] = correct_name
+      name = ' '.join(street_name)
+
+  return name 
+
+def is_street_name(elem):
+    return (elem.attrib['k'] == "addr:street")
+
+    return name
+=======
             "St ": "Street",
             "street": "Street",
             "Ave": "Avenue",
@@ -119,6 +145,7 @@ def update_name(name, mapping):
 
     return name
 
+>>>>>>> FETCH_HEAD
 def shape_element(element):
     node = {}
     created_dict = {}
@@ -157,14 +184,25 @@ def shape_element(element):
         elif lower_colon.search(k):
           match = addr.search(k)
           if match:
+<<<<<<< HEAD
+            if is_street_name(tag):
+              print v,
+              street_name = update_name(v, mapping)
+              print street_name
+              address[match.groups()[0]] = street_name
+=======
             if is_street_name(k):
               clean_street_name = update_name(v, mapping)
               address[match.groups()[0]] = clean_street_name
+>>>>>>> FETCH_HEAD
             else:
               address[match.groups()[0]] = v
         elif problemchars.search(k):
             pass
+<<<<<<< HEAD
+=======
 
+>>>>>>> FETCH_HEAD
       if len(address):
         node['address'] = address
 
@@ -197,8 +235,35 @@ def test():
     # NOTE: if you are running this code on your computer, with a larger dataset,
     # call the process_map procedure with pretty=False. The pretty=True option adds
     # additional spaces to the output, making it significantly larger.
+<<<<<<< HEAD
+    data = process_map('singapore.osm', True)
+    #pprint.pprint(data)
+
+    # correct_first_elem = {
+    #     "id": "261114295",
+    #     "visible": "true",
+    #     "type": "node",
+    #     "pos": [41.9730791, -87.6866303],
+    #     "created": {
+    #         "changeset": "11129782",
+    #         "user": "bbmiller",
+    #         "version": "7",
+    #         "uid": "451048",
+    #         "timestamp": "2012-03-28T18:31:23Z"
+    #     }
+    # }
+    # assert data[0] == correct_first_elem
+    # assert data[-1]["address"] == {
+    #                                 "street": "West Lexington St.",
+    #                                 "housenumber": "1412"
+    #                                   }
+    # assert data[-1]["node_refs"] == [ "2199822281", "2199822390",  "2199822392", "2199822369",
+    #                                 "2199822370", "2199822284", "2199822281"]
+
+=======
     data = process_map('singapore.osm', False)
     #pprint.pprint(data)
 
+>>>>>>> FETCH_HEAD
 if __name__ == "__main__":
     test()

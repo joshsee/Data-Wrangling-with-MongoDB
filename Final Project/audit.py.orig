@@ -18,12 +18,26 @@ OSMFILE = "singapore.osm"
 street_type_re = re.compile(r'\b\S+\.?$', re.IGNORECASE)
 
 
+<<<<<<< HEAD
+expected = ["Jalan", "Lebuhraya", "Avenue", "Lorong", "Persiaran", "Road", "Street", "Drive", "Lane", "Way", "Walk", "Terrace", "Crescent", "Close", "Central", "Hill", "Link", "Park", "Loop", "Place", "Turn", "View", "Green"]
+=======
 expected = ["Street", "Avenue", "Boulevard", "Drive", "Court", "Place", "Square", "Lane", "Road",
             "Trail", "Parkway", "Commons", "Close", "Circle", "Lorong", "Crescent", "Hill", "Highway", "Heights", "Link", "Loop", "Park", "Terrace", "View", "Walk", "Way"]
+>>>>>>> FETCH_HEAD
 
 # UPDATE THIS VARIABLE
 mapping = { "St": "Street",
             "St.": "Street",
+<<<<<<< HEAD
+            "Rd.": "Road",
+            "road": "Road",
+            "Ave": "Avenue",
+            "Jl.": "Jalan",
+            "Jln": "Jalan",
+            "Lor": "Lorong",
+            "Dr": "Drive"
+            }
+=======
             "St ": "Street",
             "street": "Street",
             "Ave": "Avenue",
@@ -36,6 +50,7 @@ mapping = { "St": "Street",
             "Jln": "Jalan",
             "terrace": "Terrace",
           }
+>>>>>>> FETCH_HEAD
 
 
 def audit_street_type(street_types, street_name):
@@ -58,18 +73,32 @@ def audit(osmfile):
         if elem.tag == "node" or elem.tag == "way":
             for tag in elem.iter("tag"):
                 if is_street_name(tag):
+<<<<<<< HEAD
+                    audit_street_type(street_types, tag.attrib['v'])
+=======
                     v = tag.attrib['v']
                     clean_street_name = update_name(v, mapping)
                     audit_street_type(street_types, clean_street_name)
+>>>>>>> FETCH_HEAD
 
     return street_types
 
 
 def update_name(name, mapping):
 
+<<<<<<< HEAD
+    # YOUR CODE HERE
+    street_name = name.split(' ')
+    if street_name[-1] in mapping:
+        correct_name = mapping[street_name[-1]]
+        street_name[-1] = correct_name
+
+    name = ' '.join(street_name)
+=======
     pattern = re.compile(r'\b(' + '|'.join(mapping.keys()) + r')\b')
     if pattern:
         name = pattern.sub(lambda x: mapping[x.group()], name)
+>>>>>>> FETCH_HEAD
 
     return name
 
@@ -79,5 +108,9 @@ def test():
     # assert len(st_types) == 3
     pprint.pprint(dict(st_types))
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> FETCH_HEAD
 if __name__ == '__main__':
     test()
