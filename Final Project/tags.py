@@ -32,6 +32,7 @@ def key_type(element, keys):
                 elif lower_colon.search(value):
                     keys["lower_colon"] += 1
                 elif problemchars.search(value):
+<<<<<<< HEAD
                     try:
                         print value
                     except UnicodeEncodeError:
@@ -42,6 +43,10 @@ def key_type(element, keys):
                         print value
                     except UnicodeEncodeError:
                         pass
+=======
+                    keys["problemchars"] += 1
+                else:
+>>>>>>> origin/master
                     keys["other"] += 1
 
     return keys
@@ -60,8 +65,14 @@ def process_map(filename):
 def test():
     # You can use another testfile 'map.osm' to look at your solution
     # Note that the assertions will be incorrect then.
+<<<<<<< HEAD
     keys = process_map('hong-kong.osm')
     # pprint.pprint(keys)
+=======
+    keys = process_map('hong-kong_china.osm')
+    pprint.pprint(keys)
+    # assert keys == {'lower': 5, 'lower_colon': 0, 'other': 1, 'problemchars': 1}
+>>>>>>> origin/master
 
 
 if __name__ == "__main__":
